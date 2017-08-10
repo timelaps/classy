@@ -4,6 +4,8 @@ b.describe('Classy', function () {
     b.expect(Classy).toBeFunction();
     b.expect(Classy.extend).toBeFunction();
     b.it('can extend prototypes automatically', function (t) {
-        t.expect(Classy.extend()).toBeFunction();
+        var TwoClassy = Classy.extend();
+        t.expect(TwoClassy).toBeFunction();
+        t.expect(TwoClassy()).toBeInstance(Classy.constructor);
     });
 });
