@@ -17,5 +17,16 @@
   "bugs": {
     "url": "https://github.com/timelaps/classy/issues"
   },
-  "homepage": "https://github.com/timelaps/classy#readme"
+  "homepage": "https://github.com/timelaps/classy#readme",
+  "devDependencies": {
+    "@timelaps/batterie": "^1.0.71"
+  },
+  "dependencies": {
+    "@timelaps/fn": "^1.0.4",
+    "@timelaps/io": "^1.0.2",
+    "@timelaps/is": "^1.0.8",
+    "@timelaps/n": "^1.0.21",
+    "@timelaps/time": "^1.0.1",
+    "@timelaps/to": "^1.0.5"
+  }
 }
