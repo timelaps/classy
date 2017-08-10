@@ -22,6 +22,7 @@ b.describe('Classy', function () {
     });
     b.it('has lifecycle methods which are called in a chain', function (t) {
         var counter = 0;
+        var options = {};
         var TwoClassy = Classy.extend({
             lifecycle: {
                 created: function (supr, arg) {
@@ -38,9 +39,6 @@ b.describe('Classy', function () {
                 }
             }
         });
-        var options = {};
         t.expect(ThreesCompany(options).created).toBeUndefined();
-
-        function method() {}
     }, 3);
 });

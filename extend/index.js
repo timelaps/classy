@@ -50,7 +50,7 @@ function constructorWrapper(Constructor, life_, notOriginal) {
 }
 
 function constructorExtend(name_, options_) {
-    var nameString, extendedLifecycle, constructorKeyName, child, passedParent, hasConstructor, constructor, methods, lifecycle, events, parent = this,
+    var nameString, extendedLifecycle, constructorKeyName, child, passedParent, hasConstructor, constructor, methods, lifecycle, parent = this,
         name = name_,
         nameIsStr = isString(name),
         options = options_ || {};
@@ -61,7 +61,6 @@ function constructorExtend(name_, options_) {
     options = options || {};
     lifecycle = options.lifecycle || {};
     methods = options.methods || {};
-    events = options.events || {};
     child = has(options, CONSTRUCTOR) ? options.constructor : construcktr;
     child = child ? namedChain(name || this.name, child, this) : this;
     Surrogate[PROTOTYPE] = parent ? parent[PROTOTYPE] : {};
