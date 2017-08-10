@@ -49,14 +49,16 @@ function constructorWrapper(Constructor, life_, notOriginal) {
     }
 }
 
-function constructorExtend(name_, options) {
+function constructorExtend(name_, options_) {
     var nameString, extendedLifecycle, constructorKeyName, child, passedParent, hasConstructor, constructor, methods, lifecycle, events, parent = this,
         name = name_,
-        nameIsStr = isString(name);
+        nameIsStr = isString(name),
+        options = options_ || {};
     if (!nameIsStr) {
         options = name;
         name = null;
     }
+    options = options || {};
     lifecycle = options.lifecycle || {};
     methods = options.methods || {};
     events = options.events || {};
