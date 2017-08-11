@@ -18,17 +18,15 @@ b.describe('extend', function () {
         var Clas = extend.wrapper(Class);
         var NuClass = Class.extend({
             lifecycle: {
-                created: function (supr, arg) {
-                    supr(arg);
-                    t.expect(arg).toBe(array);
+                created: function (supr) {
+                    supr();
                 }
             }
         });
         var NuClass2 = NuClass.extend({
             lifecycle: {
-                created: function (supr, arg) {
-                    supr(arg);
-                    t.expect(arg).toBe(array);
+                created: function (supr) {
+                    supr();
                 }
             }
         });
@@ -41,7 +39,7 @@ b.describe('extend', function () {
             t.expect(args[0]).toBe(array);
             this.lifecycle('created', args);
         }
-    }, 5);
+    }, 3);
     b.it('passes a bound super in the constructor', function (t) {
         var Clas = extend.wrapper(Class);
         var counter = 0;
@@ -70,16 +68,16 @@ b.describe('extend', function () {
             this.lifecycle('created', [array]);
         }
     }, 8);
-    b.it('passed arguments are respected', function (t) {
+    b.it('passed arguments are respected at the lifecycle level only', function (t) {
         var One = extend.wrapper(One_, {
-            created: function (counter) {
-                t.expect(counter).toBe(1);
+            created: function (args) {
+                t.expect(args[0]).toBe(3);
             }
         });
         var Two = One.extend('Two', {
             lifecycle: {
                 created: function (supr, arg) {
-                    t.expect(arg).toBe(2);
+                    t.expect(arg).toBe(3);
                     supr(arg - 1);
                 }
             },

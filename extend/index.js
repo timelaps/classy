@@ -9,6 +9,7 @@ var CONSTRUCTOR = 'constructor';
 var EXTEND = 'extend';
 var isValue = require('@timelaps/is/value');
 var noop = require('@timelaps/fn/noop');
+var bindWith = require('@timelaps/fn/bind/with');
 var DOUBLE_UNDERSCORE = '__';
 var COLON = ':';
 var isOf = require('@timelaps/is/instance');
@@ -69,9 +70,9 @@ function constructorExtend(name_, options_) {
     constructor = child;
     extendedLifecycle = reduce(lifecycle, function (copy, value, key) {
         var previous = copy[key] || noop;
-        copy[key] = function () {
-            var args = [bindTo(previous, this)].concat(toArray(arguments));
-            return value.apply(this, args);
+        copy[key] = function (args_) {
+            var args = bindWith(previous, [this].concat([args_]));
+            return value.apply(this, [args].concat(args_));
         };
     }, merge({}, parent ? parent.lifecycle : {}));
     child = constructorWrapper(constructor, extendedLifecycle, 1);
@@ -90,5 +91,5 @@ function construcktr(supr, args) {
 function lifecycle(key, args) {
     var parent = this.constructor;
     var life = parent.lifecycle;
-    return life[key] && life[key].apply(this, args);
+    return life[key] && life[key].call(this, toArray(args));
 }

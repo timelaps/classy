@@ -26,7 +26,7 @@ b.describe('Classy', function () {
         var TwoClassy = Classy.extend({
             lifecycle: {
                 created: function (supr, arg) {
-                    t.expect(arg).toBe(1);
+                    t.expect(arg).toBe(options);
                     supr();
                 }
             }
