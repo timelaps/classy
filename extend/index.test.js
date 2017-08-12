@@ -71,7 +71,7 @@ b.describe('extend', function () {
     b.it('passed arguments are respected at the lifecycle level only', function (t) {
         var One = extend.wrapper(One_, {
             created: function (args) {
-                t.expect(args[0]).toBe(3);
+                t.expect(args).toBe(3);
             }
         });
         var Two = One.extend('Two', {

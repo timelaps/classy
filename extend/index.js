@@ -71,7 +71,7 @@ function constructorExtend(name_, options_) {
     extendedLifecycle = reduce(lifecycle, function (copy, value, key) {
         var previous = copy[key] || noop;
         copy[key] = function (args_) {
-            var args = bindWith(previous, [this].concat([args_]));
+            var args = bindWith(previous, [this].concat(args_));
             return value.apply(this, [args].concat(args_));
         };
     }, assign({}, parent ? parent.lifecycle : {}));
