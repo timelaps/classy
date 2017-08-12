@@ -29,7 +29,7 @@ function isInstance(instance, constructor_) {
     return isOf(instance, constructor);
 }
 
-function constructorWrapper(Constructor, life_, notOriginal) {
+function constructorWrapper(Constructor, life_, members_, notOriginal) {
     var life = life_ || {};
     __.isInstance = Constructor.isInstance = function (instance) {
         return isInstance(instance, Constructor);
@@ -40,9 +40,13 @@ function constructorWrapper(Constructor, life_, notOriginal) {
     if (!fn.lifecycle) {
         fn.lifecycle = lifecycle;
     }
-    __.constructor = Constructor.constructor = Constructor;
-    __[EXTEND] = Constructor[EXTEND] = bind(constructorExtend, Constructor);
-    __.origin = Constructor.origin = !notOriginal;
+    var members = assign(members_ ? assign({}, members_) : {}, {
+        constructor: Constructor,
+        extend: bind(constructorExtend, Constructor),
+        origin: !notOriginal
+    });
+    assign(__, members);
+    assign(Constructor, members);
     return __;
 
     function __(one) {
@@ -51,7 +55,7 @@ function constructorWrapper(Constructor, life_, notOriginal) {
 }
 
 function constructorExtend(name_, options_) {
-    var nameString, extendedLifecycle, constructorKeyName, child, passedParent, hasConstructor, constructor, methods, lifecycle, parent = this,
+    var nameString, extendedLifecycle, constructorKeyName, child, passedParent, hasConstructor, constructor, methods, members, lifecycle, parent = this,
         name = name_,
         nameIsStr = isString(name),
         options = options_ || {};
@@ -75,7 +79,7 @@ function constructorExtend(name_, options_) {
             return value.apply(this, [args].concat(args_));
         };
     }, assign({}, parent ? parent.lifecycle : {}));
-    child = constructorWrapper(constructor, extendedLifecycle, 1);
+    child = constructorWrapper(constructor, extendedLifecycle, options.members, 1);
     child.extensionOptions = constructor.extensionOptions = options;
     constructor[PROTOTYPE][CONSTRUCTOR_KEY] = child;
     return child;
