@@ -123,6 +123,7 @@ b.describe('extend', function () {
         });
         var instance = Two();
         instance.destroy();
+
         function One_() {}
     });
 });

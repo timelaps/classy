@@ -76,7 +76,7 @@ function constructorExtend(name_, options_) {
         };
     }, assign({}, parent ? parent.lifecycle : {}));
     child = constructorWrapper(constructor, extendedLifecycle, 1);
-    child.extensionOptions = options;
+    child.extensionOptions = constructor.extensionOptions = options;
     constructor[PROTOTYPE][CONSTRUCTOR_KEY] = child;
     return child;
 
