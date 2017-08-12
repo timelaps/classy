@@ -1,6 +1,6 @@
 module.exports = constructorExtend;
 var isString = require('@timelaps/is/string');
-var merge = require('@timelaps/object/merge');
+var assign = require('@timelaps/object/assign');
 var has = require('@timelaps/n/has/shallow');
 var factory = require('../factory');
 var bind = require('@timelaps/fn/bind');
@@ -65,7 +65,7 @@ function constructorExtend(name_, options_) {
     child = has(options, CONSTRUCTOR) ? options.constructor : construcktr;
     child = child ? namedChain(name || this.name, child, this) : this;
     Surrogate[PROTOTYPE] = parent ? parent[PROTOTYPE] : {};
-    child[PROTOTYPE] = merge(createFrom(Surrogate), methods);
+    child[PROTOTYPE] = assign(createFrom(Surrogate), methods);
     // don't call the function if nothing exists
     constructor = child;
     extendedLifecycle = reduce(lifecycle, function (copy, value, key) {
@@ -74,8 +74,9 @@ function constructorExtend(name_, options_) {
             var args = bindWith(previous, [this].concat([args_]));
             return value.apply(this, [args].concat(args_));
         };
-    }, merge({}, parent ? parent.lifecycle : {}));
+    }, assign({}, parent ? parent.lifecycle : {}));
     child = constructorWrapper(constructor, extendedLifecycle, 1);
+    child.extensionOptions = options;
     constructor[PROTOTYPE][CONSTRUCTOR_KEY] = child;
     return child;
 
