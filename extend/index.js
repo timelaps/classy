@@ -11,7 +11,7 @@ var noop = require('@timelaps/fn/noop');
 var bindWith = require('@timelaps/fn/bind/with');
 var DOUBLE_UNDERSCORE = '__';
 var COLON = ':';
-var isOf = require('@timelaps/is/instance');
+var isInstance = require('@timelaps/is/instance');
 var toArray = require('@timelaps/to/array');
 var fromArrayLike = require('@timelaps/to/array/from/array-like');
 var reduce = require('@timelaps/array/reduce');
@@ -20,14 +20,6 @@ var CONSTRUCTOR_KEY = DOUBLE_UNDERSCORE + CONSTRUCTOR + DOUBLE_UNDERSCORE;
 var createFrom = require('@timelaps/object/create/from');
 var bindTo = require('@timelaps/fn/bind/to');
 constructorExtend.wrapper = constructorWrapper;
-
-function isInstance(instance, constructor_) {
-    var constructor = constructor_;
-    if (has(constructor, CONSTRUCTOR)) {
-        constructor = constructor[CONSTRUCTOR];
-    }
-    return isOf(instance, constructor);
-}
 
 function constructorWrapper(Constructor, life_, members_, notOriginal) {
     var life = life_ || {};
@@ -50,7 +42,7 @@ function constructorWrapper(Constructor, life_, members_, notOriginal) {
     return __;
 
     function __(one) {
-        return isOf(one, Constructor) ? one : new Constructor(fromArrayLike(arguments));
+        return isInstance(one, Constructor) ? one : new Constructor(fromArrayLike(arguments));
     }
 }
 
