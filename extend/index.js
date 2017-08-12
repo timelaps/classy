@@ -7,6 +7,7 @@ var bind = require('@timelaps/fn/bind');
 var PROTOTYPE = 'prototype';
 var CONSTRUCTOR = 'constructor';
 var EXTEND = 'extend';
+var get = require('@timelaps/n/get/deep');
 var noop = require('@timelaps/fn/noop');
 var bindWith = require('@timelaps/fn/bind/with');
 var DOUBLE_UNDERSCORE = '__';
@@ -19,6 +20,8 @@ var namedChain = require('../chain-rename');
 var CONSTRUCTOR_KEY = DOUBLE_UNDERSCORE + CONSTRUCTOR + DOUBLE_UNDERSCORE;
 var createFrom = require('@timelaps/object/create/from');
 var bindTo = require('@timelaps/fn/bind/to');
+var EXTENSION_OPTIONS = 'extensionOptions';
+var MEMBERS = 'members';
 constructorExtend.wrapper = constructorWrapper;
 
 function constructorWrapper(Constructor, life_, members_, notOriginal) {
@@ -61,7 +64,7 @@ function constructorExtend(name_, options_) {
     child = has(options, CONSTRUCTOR) ? options.constructor : construcktr;
     child = child ? namedChain(name || this.name, child, this) : this;
     Surrogate[PROTOTYPE] = parent ? parent[PROTOTYPE] : {};
-    child[PROTOTYPE] = assign(createFrom(Surrogate), methods);
+    child[PROTOTYPE] = createAndExtend(Surrogate, methods);
     // don't call the function if nothing exists
     constructor = child;
     extendedLifecycle = reduce(lifecycle, function (copy, value, key) {
@@ -71,7 +74,8 @@ function constructorExtend(name_, options_) {
             return value.apply(this, [args].concat(args_));
         };
     }, assign({}, parent ? parent.lifecycle : {}));
-    child = constructorWrapper(constructor, extendedLifecycle, options.members, 1);
+    currentmembers = get(parent, [EXTENSION_OPTIONS, MEMBERS]) || {};
+    child = constructorWrapper(constructor, extendedLifecycle, createAndExtend(currentmembers, options[MEMBERS]), 1);
     child.extensionOptions = constructor.extensionOptions = options;
     constructor[PROTOTYPE][CONSTRUCTOR_KEY] = child;
     return child;
@@ -79,6 +83,10 @@ function constructorExtend(name_, options_) {
     function Surrogate() {
         this[CONSTRUCTOR] = child;
     }
+}
+
+function createAndExtend(baseline, extension) {
+    return assign(createFrom(baseline), extension);
 }
 
 function construcktr(supr, args) {
