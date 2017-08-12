@@ -7,7 +7,6 @@ var bind = require('@timelaps/fn/bind');
 var PROTOTYPE = 'prototype';
 var CONSTRUCTOR = 'constructor';
 var EXTEND = 'extend';
-var isValue = require('@timelaps/is/value');
 var noop = require('@timelaps/fn/noop');
 var bindWith = require('@timelaps/fn/bind/with');
 var DOUBLE_UNDERSCORE = '__';
@@ -46,7 +45,7 @@ function constructorWrapper(Constructor, life_, notOriginal) {
     return __;
 
     function __(one) {
-        return isValue(one) && isOf(one, Constructor) ? one : new Constructor(toArray(arguments));
+        return isOf(one, Constructor) ? one : new Constructor(toArray(arguments));
     }
 }
 
