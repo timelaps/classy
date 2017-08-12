@@ -1,10 +1,13 @@
 var extendConstructor = require('./extend');
-Extendable.prototype.destroy = destroy;
+Extendable.prototype = {
+    destroy: function destroy(args) {
+        this.lifecycle('destroyed', args);
+    },
+    member: function member(key) {
+        return this.__constructor__[key];
+    }
+};
 module.exports = extendConstructor.wrapper(Extendable, Object);
-
-function destroy(args) {
-    this.lifecycle('destroyed', args);
-}
 
 function Extendable(args) {
     // construction wrapper gathers arguments into args
