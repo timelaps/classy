@@ -13,6 +13,7 @@ var DOUBLE_UNDERSCORE = '__';
 var COLON = ':';
 var isOf = require('@timelaps/is/instance');
 var toArray = require('@timelaps/to/array');
+var fromArrayLike = require('@timelaps/to/array/from/array-like');
 var reduce = require('@timelaps/array/reduce');
 var namedChain = require('../chain-rename');
 var CONSTRUCTOR_KEY = DOUBLE_UNDERSCORE + CONSTRUCTOR + DOUBLE_UNDERSCORE;
@@ -45,7 +46,7 @@ function constructorWrapper(Constructor, life_, notOriginal) {
     return __;
 
     function __(one) {
-        return isOf(one, Constructor) ? one : new Constructor(toArray(arguments));
+        return isOf(one, Constructor) ? one : new Constructor(fromArrayLike(arguments));
     }
 }
 
