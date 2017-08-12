@@ -4,7 +4,7 @@ Extendable.prototype = {
         this.lifecycle('destroyed', args);
     },
     member: function member(key) {
-        return this.__constructor__[key];
+        return this.__constructor__.members[key];
     }
 };
 module.exports = extendConstructor.wrapper(Extendable, Object);

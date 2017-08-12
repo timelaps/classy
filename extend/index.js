@@ -24,7 +24,7 @@ var EXTENSION_OPTIONS = 'extensionOptions';
 var MEMBERS = 'members';
 constructorExtend.wrapper = constructorWrapper;
 
-function constructorWrapper(Constructor, life_, members_, notOriginal) {
+function constructorWrapper(Constructor, life_, members, notOriginal) {
     var life = life_ || {};
     __.isInstance = Constructor.isInstance = function (instance) {
         return isInstance(instance, Constructor);
@@ -35,13 +35,10 @@ function constructorWrapper(Constructor, life_, members_, notOriginal) {
     if (!fn.lifecycle) {
         fn.lifecycle = lifecycle;
     }
-    var members = assign(members_ ? assign({}, members_) : {}, {
-        constructor: Constructor,
-        extend: bind(constructorExtend, Constructor),
-        origin: !notOriginal
-    });
-    assign(__, members);
-    assign(Constructor, members);
+    __.constructor = Constructor.constructor = Constructor;
+    __.extend = Constructor.extend = bind(constructorExtend, Constructor);
+    __.origin = Constructor.origin = !notOriginal;
+    __.members = members || {};
     return __;
 
     function __(one) {
