@@ -15,7 +15,7 @@ var COLON = ':';
 var isInstance = require('@timelaps/is/instance');
 var toArray = require('@timelaps/to/array');
 var fromArrayLike = require('@timelaps/to/array/from/array-like');
-var reduce = require('@timelaps/array/reduce');
+var forOwn = require('@timelaps/n/for/own');
 var namedChain = require('../chain-rename');
 var CONSTRUCTOR_KEY = DOUBLE_UNDERSCORE + CONSTRUCTOR + DOUBLE_UNDERSCORE;
 var createFrom = require('@timelaps/object/create/from');
@@ -64,13 +64,14 @@ function constructorExtend(name_, options_) {
     child[PROTOTYPE] = createAndExtend(Surrogate, methods);
     // don't call the function if nothing exists
     constructor = child;
-    extendedLifecycle = reduce(lifecycle, function (copy, value, key) {
-        var previous = copy[key] || noop;
-        copy[key] = function (args_) {
+    extendedLifecycle = assign({}, parent ? parent.lifecycle : {});
+    forOwn(lifecycle, function (value, key) {
+        var previous = extendedLifecycle[key] || noop;
+        extendedLifecycle[key] = function (args_) {
             var args = bindWith(previous, [this].concat(args_));
             return value.apply(this, [args].concat(args_));
         };
-    }, assign({}, parent ? parent.lifecycle : {}));
+    });
     currentmembers = get(parent, [EXTENSION_OPTIONS, MEMBERS]) || {};
     child = constructorWrapper(constructor, extendedLifecycle, createAndExtend(currentmembers, options[MEMBERS]), 1);
     child.extensionOptions = constructor.extensionOptions = options;

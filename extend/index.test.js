@@ -58,6 +58,7 @@ b.describe('extend', function () {
                 t.expect(++counter).toBe(4);
             }
         });
+        debugger;
         var instance = NuClass([1]);
         t.expect(instance).toBeInstance(Class);
 
