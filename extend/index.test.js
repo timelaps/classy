@@ -18,16 +18,12 @@ b.describe('extend', function () {
         var Clas = extend.wrapper(Class);
         var NuClass = Class.extend({
             lifecycle: {
-                created: function (supr) {
-                    supr();
-                }
+                created: function () {}
             }
         });
         var NuClass2 = NuClass.extend({
             lifecycle: {
-                created: function (supr) {
-                    supr();
-                }
+                created: function () {}
             }
         });
         var array = [1];
@@ -46,8 +42,7 @@ b.describe('extend', function () {
         var array = [];
         var NuClass = Clas.extend('NuClass', {
             lifecycle: {
-                created: function (parent, arg) {
-                    parent(arg);
+                created: function (arg) {
                     t.expect(arg).toBe(array);
                     t.expect(++counter).toBe(3);
                 }
@@ -58,7 +53,6 @@ b.describe('extend', function () {
                 t.expect(++counter).toBe(4);
             }
         });
-        debugger;
         var instance = NuClass([1]);
         t.expect(instance).toBeInstance(Class);
 
@@ -77,23 +71,23 @@ b.describe('extend', function () {
         });
         var Two = One.extend('Two', {
             lifecycle: {
-                created: function (supr, arg) {
+                created: function (arg) {
                     t.expect(arg).toBe(3);
-                    supr(arg - 1);
                 }
             },
             constructor: function (supr, args) {
+                t.expect(args[0]).toBe(1);
                 supr([args[0] + 1]);
             }
         });
         var Three = Two.extend('Three', {
             lifecycle: {
-                created: function (supr, arg) {
+                created: function (arg) {
                     t.expect(arg).toBe(3);
-                    supr(arg - 1);
                 }
             },
             constructor: function (supr, args) {
+                t.expect(args[0]).toBe(0);
                 supr([args[0] + 1]);
             }
         });
@@ -107,7 +101,7 @@ b.describe('extend', function () {
             t.expect(val).toBe(3);
             this.lifecycle('created', [val]);
         }
-    }, 7);
+    }, 9);
     b.it('also stacks the destroy lifecycle function', function (t) {
         var array = [];
         One_.prototype.destroy = function () {
@@ -116,8 +110,7 @@ b.describe('extend', function () {
         var One = extend.wrapper(One_);
         var Two = One.extend({
             lifecycle: {
-                destroyed: function (supr, arg) {
-                    supr(arg);
+                destroyed: function (arg) {
                     t.expect(arg).toBe(array);
                 }
             }

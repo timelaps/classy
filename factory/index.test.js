@@ -6,8 +6,7 @@ b.describe('factory', function () {
     b.it('extends classes with only a function', function (t) {
         var Clas = extend.wrapper(Class);
         var array = [];
-        var NuClass = Clas.factory(function (supr, arg) {
-            supr(arg);
+        var NuClass = Clas.factory(function (arg) {
             t.expect(arg).toBe(array);
         });
         var instance = NuClass(array);

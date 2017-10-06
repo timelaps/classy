@@ -7,7 +7,7 @@ Extendable.prototype = {
         return this.__constructor__.members[key];
     }
 };
-module.exports = extendConstructor.wrapper(Extendable, Object);
+module.exports = extendConstructor.wrapper(Extendable);
 
 function Extendable(args) {
     // construction wrapper gathers arguments into args

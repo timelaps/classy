@@ -1,4 +1,5 @@
 module.exports = constructorExtend;
+var forEach = require('@timelaps/n/for/each');
 var isString = require('@timelaps/is/string');
 var assign = require('@timelaps/object/assign');
 var has = require('@timelaps/n/has/shallow');
@@ -24,17 +25,17 @@ var EXTENSION_OPTIONS = 'extensionOptions';
 var MEMBERS = 'members';
 constructorExtend.wrapper = constructorWrapper;
 
-function constructorWrapper(Constructor, life_, members, notOriginal) {
-    var life = life_ || {};
+function constructorWrapper(Constructor, life, members, chain, notOriginal) {
     __.isInstance = Constructor.isInstance = function (instance) {
         return isInstance(instance, Constructor);
     };
-    Constructor.lifecycle = life;
+    Constructor.lifecycle = life || {};
     __.factory = Constructor.factory = factory(Constructor);
     var fn = __.fn = Constructor.fn = Constructor[PROTOTYPE].fn = Constructor[PROTOTYPE];
     if (!fn.lifecycle) {
         fn.lifecycle = lifecycle;
     }
+    __.chain = Constructor.chain = (chain || []).concat([Constructor]);
     __.constructor = Constructor.constructor = Constructor;
     __.extend = Constructor.extend = bind(constructorExtend, Constructor);
     __.origin = Constructor.origin = !notOriginal;
@@ -58,6 +59,7 @@ function constructorExtend(name_, options_) {
     options = options || {};
     lifecycle = options.lifecycle || {};
     methods = options.methods || {};
+    chain = parent.chain.slice(0);
     child = has(options, CONSTRUCTOR) ? options.constructor : construcktr;
     child = child ? namedChain(name || this.name, child, this) : this;
     Surrogate[PROTOTYPE] = parent ? parent[PROTOTYPE] : {};
@@ -73,7 +75,7 @@ function constructorExtend(name_, options_) {
         };
     });
     currentmembers = get(parent, [EXTENSION_OPTIONS, MEMBERS]) || {};
-    child = constructorWrapper(constructor, extendedLifecycle, createAndExtend(currentmembers, options[MEMBERS]), 1);
+    child = constructorWrapper(constructor, lifecycle, createAndExtend(currentmembers, options[MEMBERS]), chain, 1);
     child.extensionOptions = constructor.extensionOptions = options;
     constructor[PROTOTYPE][CONSTRUCTOR_KEY] = child;
     return child;
@@ -92,7 +94,12 @@ function construcktr(supr, args) {
 }
 
 function lifecycle(key, args) {
-    var parent = this.constructor;
-    var life = parent.lifecycle;
-    return life[key] && life[key].call(this, toArray(args));
+    var instance = this;
+    var parent = instance.constructor;
+    var chain = parent.chain;
+    forEach(chain, function (constructor) {
+        var lifecycle = constructor.lifecycle;
+        var method = lifecycle[key] || noop;
+        method.apply(instance, args);
+    });
 }

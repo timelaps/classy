@@ -25,16 +25,14 @@ b.describe('Classy', function () {
         var options = {};
         var TwoClassy = Classy.extend({
             lifecycle: {
-                created: function (supr, arg) {
+                created: function (arg) {
                     t.expect(arg).toBe(options);
-                    supr();
                 }
             }
         });
         var ThreesCompany = TwoClassy.extend({
             lifecycle: {
-                created: function (supr, opts) {
-                    supr(counter + 1);
+                created: function (opts) {
                     t.expect(opts).toBe(options);
                 }
             }
